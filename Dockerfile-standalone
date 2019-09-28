@@ -1,0 +1,32 @@
+FROM ruby:2.3.5
+
+ARG itmsversion=0.2.8
+ARG user=itms
+ARG group=itms
+ARG uid=1000
+ARG gid=1000
+
+RUN apt-get update && apt-get install -y --no-upgrade default-jre
+RUN curl -LO https://github.com/sshaw/itunes_store_transporter_web/archive/v${itmsversion}.tar.gz \
+    && tar zxf v${itmsversion}.tar.gz  && rm v${itmsversion}.tar.gz
+
+RUN groupadd -g ${gid} ${group} && useradd -u ${uid} -g ${gid} -s /bin/rbash ${user}
+
+RUN mv itunes_store_transporter_web-${itmsversion} /opt/itms
+RUN mkdir -p /var/lib/itms
+RUN chown -R ${user}:${group} /var/lib/itms
+
+VOLUME /var/lib/itms
+
+WORKDIR /opt/itms
+
+RUN ruby ./install.rb --no-prompt --db-driver=sqlite
+ADD itmsdocker-standalone.sh .
+
+RUN chown -R ${user}:${group} .
+
+EXPOSE 3000
+
+USER ${user}
+
+ENTRYPOINT ["./itmsdocker-standalone.sh"]
