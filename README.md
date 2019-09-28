@@ -12,11 +12,11 @@ data will be lost when the container is stopped/restarted/deleted.
 The following command stores the Transporter GUI's database and `iTMSTransporter` log files under the `storage` directory,
 and mounts `iTMSTransporter`'s root directory `/path/to/itms`:
 
-    docker run -v storage:/var/lib/itms -v /path/to/itms:/opt/itms -p 3000:3000 screenstaring/itunes-store-transporter-gui:standalone
+    docker run -v storage:/var/lib/itms -v /path/to/itms:/itms -p 3000:3000 screenstaring/itunes-store-transporter-gui:standalone
 
 You'll also want to mount the directory containing the assets to be upload to the iTunes Store:
 
-    docker run -v /my/assets:/assets -v storage:/var/lib/itms -v /path/to/itms:/opt/itms -p 3000:3000 screenstaring/itunes-store-transporter-gui:standalone
+    docker run -v /my/assets:/assets -v storage:/var/lib/itms -v /path/to/itms:/itms -p 3000:3000 screenstaring/itunes-store-transporter-gui:standalone
 
 You can mount your assets in the container using any path you'd like.
 
