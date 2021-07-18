@@ -19,10 +19,19 @@ setup_volume() {
     export ITMS_DATABASE_URL="sqlite3:$db_dir/$db_name"
 }
 
+# Allow the user to specify an iTMSTransporter installer
+install_transporter() {
+    local command=$(ls -1 /installer/*.sh | head)
+    chmod u+x "$command"
+
+    eval "$command --accept --nox11 -q --target /tmp/ --noexec" && cp -R /tmp/itms /usr/local/
+}
+
 trap 'shutdown' TERM
 set -e
 
 setup_volume
+[ -d /installer ] && install_transporter
 
 ./bin/itmsweb start -h 0.0.0.0 &
 ./bin/itmsworker &
